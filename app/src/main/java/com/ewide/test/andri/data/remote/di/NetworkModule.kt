@@ -1,4 +1,4 @@
-package com.ewide.test.andri.data.di
+package com.ewide.test.andri.data.remote.di
 
 import com.ewide.test.andri.BuildConfig
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
