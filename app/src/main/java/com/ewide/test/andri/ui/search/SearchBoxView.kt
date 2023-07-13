@@ -77,7 +77,7 @@ class SearchBoxView @JvmOverloads constructor(
                     lastInput = newtInput
                     debounceJob = uiScope.launch {
                         delay(500)
-                        if (lastInput == newtInput) {
+                        if (lastInput == newtInput && newtInput.isNotBlank() && newtInput.isNotBlank()) {
                             input(newtInput)
                         }
                     }
