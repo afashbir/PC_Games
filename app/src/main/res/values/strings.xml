@@ -6,4 +6,6 @@
     <string name="search_message">Start finding your game..</string>
     <string name="error_message">Oops, failed to find the result</string>
     <string name="empty_result_message">Sorry, looks like we cannot found your game. Try finding another one!</string>
+    <string name="your_loved_games">Your loved games</string>
+    <string name="empty_favorite_message">Do you hate playing games? Try finding one</string>
 </resources>

@@ -33,6 +33,16 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateLovedStatus(item: Game) {
+        viewModelScope.launch {
+            if (item.isLoved) {
+                searchRepository.favorite(item)
+            } else {
+                searchRepository.unFavorite(item)
+            }
+        }
+    }
 }
 
 sealed interface SearchModelUiState {

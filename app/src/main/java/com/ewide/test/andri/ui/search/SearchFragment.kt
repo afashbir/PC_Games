@@ -15,13 +15,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class SearchFragment : Fragment(), SearchBoxView.Listener {
+class SearchFragment : Fragment(), SearchBoxView.Listener, GameAdapter.Listener {
 
     private var _binding: FragmentSearchBinding? = null
 
     private val searchViewModel: SearchViewModel by viewModels()
 
-    private val resultAdapter: GameAdapter by lazy { GameAdapter() }
+    private val resultAdapter: GameAdapter by lazy { GameAdapter(this) }
 
     private val binding get() = _binding!!
 
@@ -57,6 +57,10 @@ class SearchFragment : Fragment(), SearchBoxView.Listener {
 
     override fun onSearch(keyword: String) {
         searchViewModel.searchGame(keyword)
+    }
+
+    override fun onClick(item: Game) {
+        searchViewModel.updateLovedStatus(item)
     }
 
     override fun onDestroyView() {
