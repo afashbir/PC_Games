@@ -46,8 +46,6 @@ class SearchBoxView @JvmOverloads constructor(
         }
     }
 
-    @Suppress("unused")
-    // This function will be used later when implement search functionality
     fun onSearch(listener: Listener) {
         this.listener = listener
     }
