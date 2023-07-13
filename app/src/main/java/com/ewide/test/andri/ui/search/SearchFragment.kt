@@ -9,8 +9,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import com.ewide.test.andri.R
 import com.ewide.test.andri.databinding.FragmentSearchBinding
 import com.ewide.test.andri.domain.model.Game
+import com.ewide.test.andri.domain.model.SortPref
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -19,7 +22,7 @@ class SearchFragment : Fragment(), SearchBoxView.Listener, GameAdapter.Listener 
 
     private var _binding: FragmentSearchBinding? = null
 
-    private val searchViewModel: SearchViewModel by viewModels()
+    private val viewModel: SearchViewModel by viewModels()
 
     private val resultAdapter: GameAdapter by lazy { GameAdapter(this) }
 
@@ -43,24 +46,26 @@ class SearchFragment : Fragment(), SearchBoxView.Listener, GameAdapter.Listener 
             adapter = resultAdapter
         }
 
-        searchViewModel.uiState.observe(this.viewLifecycleOwner) { state ->
+        viewModel.uiState.observe(this.viewLifecycleOwner) { state ->
             when (state) {
                 SearchModelUiState.Loading -> showLoadingState()
                 SearchModelUiState.EmptyResult -> showEmptyState()
                 is SearchModelUiState.Error -> showErrorState(state.throwable.message)
-                is SearchModelUiState.Success -> showSearchResult(state.data)
+                is SearchModelUiState.Success -> showSearchResult(state.data, state.sortPref)
             }
         }
 
         binding.searchBox.onSearch(this)
+
+        binding.sortButton.setOnClickListener { viewModel.sortResult() }
     }
 
     override fun onSearch(keyword: String) {
-        searchViewModel.searchGame(keyword)
+        viewModel.searchGame(keyword)
     }
 
     override fun onClick(item: Game) {
-        searchViewModel.updateLovedStatus(item)
+        viewModel.updateLovedStatus(item)
     }
 
     override fun onDestroyView() {
@@ -68,13 +73,21 @@ class SearchFragment : Fragment(), SearchBoxView.Listener, GameAdapter.Listener 
         super.onDestroyView()
     }
 
-    private fun showSearchResult(data: List<Game>) {
+    private fun showSearchResult(data: List<Game>, sortPref: SortPref) {
         binding.run {
             startSearching.isVisible = false
             loadingView.isVisible = false
             errorResult.isVisible = false
             emptyResult.isVisible = false
             searchResult.isVisible = true
+
+            sortButton.isVisible = true
+            val drawableRes = when (sortPref) {
+                SortPref.ASC ->  R.drawable.ic_desc
+                SortPref.DESC -> R.drawable.ic_asc
+            }
+
+            sortButton.load(drawableRes)
         }
 
         resultAdapter.setData(data)
@@ -84,6 +97,7 @@ class SearchFragment : Fragment(), SearchBoxView.Listener, GameAdapter.Listener 
         binding.run {
             startSearching.isVisible = false
             loadingView.isVisible = false
+            sortButton.isVisible = false
             searchResult.isVisible = false
             emptyResult.isVisible = false
             errorResult.isVisible = true
@@ -97,6 +111,7 @@ class SearchFragment : Fragment(), SearchBoxView.Listener, GameAdapter.Listener 
     private fun showLoadingState() {
         binding.run {
             startSearching.isVisible = false
+            sortButton.isVisible = false
             searchResult.isVisible = false
             errorResult.isVisible = false
             emptyResult.isVisible = false
@@ -107,6 +122,7 @@ class SearchFragment : Fragment(), SearchBoxView.Listener, GameAdapter.Listener 
     private fun showEmptyState() {
         binding.run {
             startSearching.isVisible = false
+            sortButton.isVisible = false
             searchResult.isVisible = false
             errorResult.isVisible = false
             loadingView.isVisible = false
