@@ -87,11 +87,13 @@ class GameRepositoryTest {
         assertEquals(expectedResult, searchResult)
     }
 
+    //region private methods
     private fun setupGameRepository() {
         objectUnderTest = GameRepositoryImpl(
             gameApi, gameDao
         )
     }
+    //endregion
 
     companion object {
         private const val DUMMY_GAME_ID = "ID-001"
